@@ -36,7 +36,6 @@ public class Q_10814 {
 		System.out.println(sb);	
 	}
 	
-	// 안정 정렬 중 병합 정렬
 	static void merge(int left, int mid, int right) {		
 		int i = left, j = mid + 1, k = left;
 		
@@ -71,7 +70,7 @@ public class Q_10814 {
 		}
 	}
 	
-	// 합병 정렬
+	// 안정 정렬 중 병합 정렬
 	static void mergesort(int left, int right) {
 		int mid;
 		
