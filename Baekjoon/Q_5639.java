@@ -6,7 +6,7 @@ import java.util.ArrayList;
 public class Q_5639 {
 	static int[][] array = new int[1000000][2];
 	static ArrayList<Integer> nodes_left = new ArrayList<Integer>(); // 왼쪽 트리
-	static ArrayList<Integer> nodes_right = new ArrayList<Integer>(); // 오른쪽 틔리
+	static ArrayList<Integer> nodes_right = new ArrayList<Integer>(); // 오른쪽 트리
 
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
