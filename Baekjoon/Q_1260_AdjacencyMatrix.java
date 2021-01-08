@@ -6,7 +6,7 @@ import java.util.LinkedList;
 import java.util.Queue;
 import java.util.StringTokenizer;
 
-public class Q_1260 {
+public class Q_1260_AdjacencyMatrix {
 	static ArrayList<Integer> dfs_result = new ArrayList<Integer>();
 	static ArrayList<Integer> bfs_result = new ArrayList<Integer>();
 	static int[] visited;
