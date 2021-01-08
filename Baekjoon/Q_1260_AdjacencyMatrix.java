@@ -58,15 +58,19 @@ public class Q_1260_AdjacencyMatrix {
 	
 	public static void BFS(int[][] arr, int start) {
 		visited[start] = 1;
-		bfs_result.add(start);
-		
-		for (int i = 1; i < arr.length; i++) {
-			if (arr[start][i] == 1 && visited[i] == 0 && !queue.contains(i))
-				queue.add(i);
-		}
+		queue.offer(start);
 		
 		while(!queue.isEmpty()) {
-			BFS(arr, queue.poll());
+			int x = queue.poll();
+			bfs_result.add(x);
+			
+			// 모든 노드 방문했는지 확인
+			for (int i = 1; i < arr.length; i++) {
+				if (arr[x][i] == 1 && visited[i] == 0 && !queue.contains(i)) {
+					queue.offer(i);
+					visited[i] = 1;
+				}
+			}
 		}
 	}
 }
