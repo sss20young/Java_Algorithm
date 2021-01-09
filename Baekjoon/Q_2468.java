@@ -1,94 +1,63 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.StringTokenizer;
 
 public class Q_2468 {
-	static int N; // 2차원 배열의 행과 열의 개수
-	static int array[][]; // 입력받을 배열
-	static int check[][]; // 방문 여부
-	static int count = 0; // 잠기지 않은 지역이 이어져있는 개수
-	static int place = 0; // 잠기지 않은 지역 개수
-	
+	static int N;
+	static int[][] array, visited;
+	static int[] x = { -1, 1, 0, 0 };
+	static int[] y = { 0, 0, -1, 1 };
+
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		StringTokenizer st;
 		
 		N = Integer.parseInt(br.readLine());
-		array = new int[N][N]; 
-		ArrayList<Integer> area = new ArrayList<Integer>(); // 안전한 영역
-		int max; // 지역 높이의 최대값
-		
+		array = new int[N][N];
+		int max_height = 1;
+		// 건물의 최대 높이 구하기
 		for (int i = 0; i < N; i++) {
 			st = new StringTokenizer(br.readLine());
 			for (int j = 0; j < N; j++) {
 				array[i][j] = Integer.parseInt(st.nextToken());
+				max_height = Math.max(max_height, array[i][j]);
 			}
 		}
 		
-		max= array[0][0]; // 초기값 설정
-		for (int i = 0; i < N; i++) {
-			for (int j = 0; j < N; j++) {
-				max = Math.max(max, array[i][j]);
-			}
-		}
-		
-		for (int h = 0; h <= max; h++) { // 높이가 0 ~ max 일 떄
-			check = new int[N][N]; // 방문 여부 초기화
-			
-			// 높이가 달라질 때마다 count와 place 초기화
-			count = 0;
+		int result = 1;
+		int place = 0; // 잠기지 않은 지역 개수
+		for (int h = 1; h < max_height; h++) { // 건물의 높이는 1 이상 max_height 이하의 정수
+			// 높이가 달라질 때마다 visited와 place 초기화
+			visited = new int[N][N];
 			place = 0;
 			
-			for (int i = 0; i < N; i++) {
+			for (int i = 0; i < N; i++) { // N X N BFS 순회
 				for (int j = 0; j < N; j++) {
-					if (check[i][j] == 0 && array[i][j] > h) {
-						visit(i, j, h);
-						
-						if (count > 0)
-							place++;
-						count = 0;
+					if (array[i][j] <= h) // 높이 이하이면 방문한걸로 여김
+						visited[i][j] = 1;
+					else if (array[i][j] > h && visited[i][j] == 0) { // 방문하지 않았으면
+						BFS(i, j, h);
+						place++;
 					}
 				}
 			}
 			
-			if (place > 0)
-				area.add(place);
+			result = Math.max(result, place);
 		}
 		
-		int size = area.size();
-		
-		int solution = 0; // 비가 오지 않을 경우
-		for (int i = 0; i < size; i++) {
-			solution = Math.max(solution, area.get(i));
-		}
-		
-		System.out.println(solution);
+		System.out.print(result);
 	}
 	
-	public static void visit(int i, int j, int h) {
-		if (array[i][j] > h) {
-			check[i][j] = 1;
-			count++;
-			
-			// 상 하 좌 우 방문
-			if (i != 0) 
-				if (array[i-1][j] > h && check[i-1][j] == 0) { // 상
-					visit(i-1, j, h); // 방문
+	static void BFS(int i, int j, int height) {
+		visited[i][j] = 1;
+		
+		for (int k = 0; k < 4; k++) {
+			if (i+x[k] >=0 && j+y[k] >= 0 && i+x[k] < N && j+y[k] < N) {
+				if (array[i+x[k]][j+y[k]] > height && visited[i+x[k]][j+y[k]] == 0) {
+					BFS(i+x[k], j+y[k], height);
 				}
-			if (i != N-1)
-				if (array[i+1][j] > h && check[i+1][j] == 0) { // 하
-					visit(i+1, j, h); // 방문
-				}
-			if (j != 0)
-				if (array[i][j-1] > h && check[i][j-1] == 0) { // 좌
-					visit(i, j-1, h); // 방문
-				}
-			if (j != N-1)
-				if (array[i][j+1] > h && check[i][j+1] == 0) { // 우
-					visit(i, j+1, h); // 방문
-				}
+			}
 		}
 	}
 }
