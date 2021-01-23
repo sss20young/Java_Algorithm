@@ -16,17 +16,30 @@ public class Q_1629 {
 		System.out.println(divide(A, B, C));
 	}
 	
+	// 첫번째 방법
 	public static long divide(long A, long B, long C) {
 		if (B == 0) return 1;
 		if (B == 1) return A % C;
 		
 		long divide2 = divide(A, B/2, C); // 지수를 2로 나누기
-		long d2 = divide2 * divide2 % C;
 		
 		if (B % 2 == 0) { // 지수가 짝수이면
-			return d2;
+			return divide2 * divide2 % C;
 		} else { // 지수가 홀수이면
-			return d2 * A % C;
+			return (divide2 * divide2 % C) * A % C; // divide2 * divide2 * A % C -> long 범위 초과
+		}
+	}
+	
+	// 두번째 방법
+	public static long divide_1(long A, long B, long C) {
+		if (B == 0) return 1;
+		if (B == 1) return A % C;
+		
+		if (B % 2 == 0) { // 지수가 짝수이면
+			long divide2 = divide_1(A, B/2, C); // 지수를 2로 나누기
+			return divide2 * divide2 % C;
+		} else { // 지수가 홀수이면
+			return divide_1(A, B-1, C) * A % C;
 		}
 	}
 }
