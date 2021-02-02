@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.StringTokenizer;
 
-public class H_2020_QualificationRound {
+public class H_2020_QualificationRound2 {
 	static String[] input_files = new String[] {"a_example", "b_read_on", "e_so_many_books", "f_libraries_of_the_world"}; // TODO: "c_incunabula", "d_tough_choices"
 	static BufferedReader br;
 	static BufferedWriter bw;
@@ -105,7 +105,11 @@ public class H_2020_QualificationRound {
 		// TODO: 도서관이 가지고 있는 책들 중 score값이 높고, has_books가 많고, ship_books_per_day가 높고, signup_process_days 낮은 순으로 정렬해야함
 		Arrays.sort(librariesArray, (o1, o2) -> Integer.compare(o1.signup_process_days, o2.signup_process_days)); // signup_process_days이 작은 순으로 정렬
 		
-		int[][] array = new int[basicInfo.libraries][basicInfo.days];
+		// int[][] array = new int[basicInfo.libraries][basicInfo.days]; // OutofMemoryError: Java heap space
+		ArrayList<ArrayList<Integer>> array = new ArrayList<ArrayList<Integer>>();
+		for (int i = 0; i < basicInfo.libraries; i++) {
+			array.add(new ArrayList<Integer>());
+		}
 		
 		// signup_process_days 넣기
 		int day = 0;
@@ -115,15 +119,17 @@ public class H_2020_QualificationRound {
 				for (k = day; k < day+librariesArray[i].signup_process_days; k++) {
 					if (k >= basicInfo.days) break;
 					
-					if (array[j][k] == 0 && i == j) {
-						array[j][k] = -1;
+					if (array.get(j).size() <= k && i == j) { // array[j][k] == 0
+						array.get(j).add(-1); // // array[j][k] == -1
 						if (k == day) { // signup_process 된 libraries count
 							basicInfo.libraries_count++;
 						}
-					} else if(day > 0 && array[j][day-1] == -1) {
-						continue;
-					} else if (array[j][k] == 0) {
-						array[j][k] = -2;
+					} 
+					if (day > 0 && array.get(j).size() > day-1) {
+						if (array.get(j).get(day-1) == -1)
+							continue;
+					} else if (array.get(j).size() <= k) {
+						array.get(j).add(-2);
 					}
 				}
 			}
@@ -136,17 +142,18 @@ public class H_2020_QualificationRound {
 		
 		for (int j = 0; j < basicInfo.days; j++) { // 2차원 배열을 세로로 탐색!
 			for (k = 0; k < basicInfo.libraries; k++) {
-				if (array[k][j] == 0) {
+				if (array.get(k).size() <= j) {
 					for (int l = 0; l < librariesArray[k].ship_books_per_day; l++) {
 						if (!librariesArray[k].what_books.isEmpty()) {
 							what_books_index = librariesArray[k].what_books.remove(0);
 							
 							if (basicInfo.check[what_books_index] == 0) { // 이미 ship_book 되어서 겹치는 책 포함하지 않기(check)
-								if (array[k][j] == 0) {
-									array[k][j] = basicInfo.scores[what_books_index]; // 스코어 값 넣어주기
+								if (array.get(k).size() <= j) {
+									array.get(k).add(basicInfo.scores[what_books_index]); // 스코어 값 넣어주기
 								} else {
-									array[k][j] += basicInfo.scores[what_books_index]; // 스코어 값 더해서 넣어주기
-								}
+									int sum = array.get(k).get(j) + basicInfo.scores[what_books_index]; // 스코어 값 더해서 넣어주기
+									array.get(k).add(j, sum);
+ 								}
 								librariesArray[k].scanned_books.add(what_books_index);
 								basicInfo.check[what_books_index] = 1;
 							} else {
@@ -159,8 +166,8 @@ public class H_2020_QualificationRound {
 		}
 		
 		// for (int i = 0; i < basicInfo.libraries; i++) {
-		// 	for (int j = 0; j < basicInfo.days; j++) {
-		// 		System.out.print(array[i][j]);
+		// 	for (int j = 0; j < array.get(i).size(); j++) {
+		// 		System.out.print(array.get(i).get(j));
 		// 	}
 		// 	System.out.println();
 		// }
@@ -183,5 +190,8 @@ public class H_2020_QualificationRound {
 
 		bw.write(sb.toString());
 		bw.flush();
+	}
+
+	public H_2020_QualificationRound() {
 	}
 }
