@@ -5,7 +5,7 @@ class P_Level2_큰수만들기 {
     }
     
     public static String solution(String number, int k) {
-        String answer = "";
+        StringBuilder answer = new StringBuilder();
         int start = 0;
         int end = k;
 
@@ -19,9 +19,9 @@ class P_Level2_큰수만들기 {
                 }
             }
             end++;
-            answer += max;
+            answer.append(max);
         }
 
-        return answer;
+        return answer.toString();
     }
 }
