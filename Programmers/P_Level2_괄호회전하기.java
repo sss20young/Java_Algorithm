@@ -12,47 +12,42 @@ class P_Level2_괄호회전하기 {
             s = s.substring(1, s.length()) + s.substring(0, 1);
             if (check(s)) answer++;
         }
-        
+
         return answer;
     }
     
     static boolean check(String s) {
-        Queue<Character> queue = new LinkedList<>();
+        Stack<Character> stack = new Stack<>();
         for (int i = 0; i < s.length(); i++) {
-            queue.add(s.charAt(i));
-        }        
-                
-        Deque<Character> deque = new ArrayDeque<>();
-        for (int i = 0; i < s.length(); i++) {
-            Character c = queue.poll();
+            Character c = s.charAt(i);
 
             switch (c) {
                 case '[':
-                    deque.addLast(c);
+                    stack.push(c);
                     break;
                 case '{':
-                    deque.addLast(c);
+                    stack.push(c);
                     break;
                 case '(':
-                    deque.addLast(c);
+                    stack.push(c);
                     break;
                 case ']':
-                    if (deque.size() != 0) {
-                        Character d = deque.removeLast();
+                    if (stack.size() != 0) {
+                        Character d = stack.pop();
                         if (!d.equals('['))
                             return false;
                     } else return false;
                     break;
                 case '}':
-                    if (deque.size() != 0) {
-                        Character d = deque.removeLast();
+                    if (stack.size() != 0) {
+                        Character d = stack.pop();
                         if (!d.equals('{'))
                             return false;
                     } else return false;
                     break;
                 case ')':
-                    if (deque.size() != 0) {
-                        Character d = deque.removeLast();
+                    if (stack.size() != 0) {
+                        Character d = stack.pop();
                         if (!d.equals('('))
                             return false;
                     } else return false;
@@ -60,7 +55,7 @@ class P_Level2_괄호회전하기 {
             }
         }
         
-        if (queue.size() == 0 && deque.size() == 0)
+        if (stack.size() == 0)
             return true;
         
         return false;
